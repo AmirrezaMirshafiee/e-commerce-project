@@ -1,20 +1,15 @@
-export const getAllUsers = async (req, res, next) => {
-    try {
-      
-    } catch (err) {
-      
-    }
-  };
-  export const deleteUser = async (req, res, next) => {
-    try {
+import catchAsync from "../Utils/catchAsync.js";
 
-    } catch (err) {
-      
-    }
-  };export const updateUser = async (req, res, next) => {
-    try {
+export const getAllUsers=catchAsync(async(req,res,next)=>{
 
-    } catch (err) {
-      
-    }
-  };
+})
+export const getUser=catchAsync(async(req,res,next)=>{
+    
+})
+export const updateUser=catchAsync(async(req,res,next)=>{
+    
+})
+
+export const deleteUser=catchAsync(async(req,res,next)=>{
+    
+})
