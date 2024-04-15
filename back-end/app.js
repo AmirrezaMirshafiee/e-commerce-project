@@ -4,6 +4,7 @@ import cors from 'cors'
 import usersRoute from './routes/users.js'
 import authRoute from './routes/auth.js'
 import HandleError from './Utils/handleError.js'
+import logRouter from './routes/log.js'
 const app=express()
 app.use(cors())
 app.use(morgan('dev'))
@@ -27,7 +28,7 @@ app.use(async(req, res, next) => {
     }
   });
 
-
+app.use("/api/v1/log", logRouter);
 app.use('/api/v1/auth',authRoute)
 app.use('/api/v1/users',usersRoute)
 app.use("*", (req, res, next) => {
