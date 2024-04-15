@@ -48,7 +48,7 @@ export const signUp = catchAsync(async (req, res, next) => {
   const { password, ...others } = req.body;
   const newPassword = bcrypt.hashSync(password, 10);
   const newUser = await User.create({ ...others, password: newPassword });
-  const newCart = await Cart.create({ userId: newUser._id, products: [] });
+  // const newCart = await Cart.create({ userId: newUser._id, products: [] });
   return res.status(201).json({
     status: "success",
     message: "register successfully",
