@@ -4,6 +4,7 @@ import cors from 'cors'
 import usersRoute from './routes/users.js'
 import authRoute from './routes/auth.js'
 import HandleError from './Utils/handleError.js'
+import catchError from './utils/catchError.js'
 import logRouter from './routes/log.js'
 const app=express()
 app.use(cors())
