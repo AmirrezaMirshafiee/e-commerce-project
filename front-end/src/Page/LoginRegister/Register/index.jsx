@@ -13,6 +13,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -36,7 +39,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Register({ handlePage }) {
-  // const use = useNavigate();
+
+  const use = useNavigate();
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
@@ -49,24 +53,219 @@ export default function Register({ handlePage }) {
     address: "",
     phone: "",
   });
-  const handleCheck=(async(e)=>{
-    try{
+
+    
+
+  const handleCheck = async (e) => {
+    try {
       e.preventDefault();
-      const res=await fetch("http://localhost:7000/api/v1/auth/register", {
+
+      const res = await fetch("http://localhost:7000/api/v1/auth/register", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ phone, email, username, password, address }),
-      })
-      const data=await res.json()
-      if(data.status==='error'){
-        alert(data.message)
+      });
+      let inputError = {
+        username: "",
+        password: "",
+        email: "",
+        phone: "",
+        address: "",
+      };
+      // let notify = () => toast.error(inputError, )
+      let regexPassword =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+      let regexPhone =
+        /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/gm;
+      let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm;
+      if (!username) {
+        inputError = {
+          ...inputError,
+          username:toast.error("username is required",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }) ,
+        };
       }
-    }catch(error){
-      console.log(error,'err')
-      setErr(error)
+      if (!email) {
+        inputError = {
+          ...inputError,
+          email:toast.error("email is required",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }) ,
+        };
+      }
+      if (!phone) {
+        inputError = {
+          ...inputError,
+          phone:toast.error("phone is required",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }) ,
+        };
+      }
+      if (!address) {
+        inputError = {
+          ...inputError,
+          address:toast.error("adders is required",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }) ,
+        };
+      }
+      
+      if (!password) {
+        inputError = {
+          ...inputError,
+          password:toast.error("password is required",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }),
+        };
+      }
+      if (email&&!regexEmail.test(email)) {
+        inputError = {
+          ...inputError,
+          email:toast.error("email invalid",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }) ,
+        };
+      }
+
+      if (phone&&!regexPhone.test(phone)) {
+        inputError = {
+          ...inputError,
+          phone:toast.error("phone number invalid",{
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        
+            }) ,
+        };
+      }
+
+      if (!regexPassword.test(password)) {
+        inputError = {
+          ...inputError,
+          password:toast.error("password not strong",{
+              position: "bottom-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+          
+              })
+        };
+      }
+      if(password&&password.length<8){
+        inputError = {
+          ...inputError,
+          password:toast.error("password must be at least 8 characters long and contain at least",{
+              position: "bottom-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+          
+              })
+        };
+      }
+
+
+      setErr(inputError);
+      const data = await res.json();
+      if (data.status === 'success'){
+        toast.success('register successfully', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          })
+      }else{
+        toast.error('register failed',{
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          })
+      }
+    } catch (error) {
+      toast.error(error,{
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        })
+      setErr(error);
     }
-  })
-  // const validate = (e) => {
+  };
   //   e.preventDefault();
   //   let inputError = {
   //     username: "",
@@ -131,7 +330,12 @@ export default function Register({ handlePage }) {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <Box component="form" noValidate onSubmit={handleCheck} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleCheck}
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -212,6 +416,7 @@ export default function Register({ handlePage }) {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
+                required
                   control={
                     <Checkbox value="allowExtraEmails" color="primary" />
                   }
@@ -227,6 +432,17 @@ export default function Register({ handlePage }) {
             >
               Register
             </Button>
+            <ToastContainer
+    position="top-center"
+    autoClose={5000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+    theme="light" />
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link onClick={handlePage} variant="body2">
