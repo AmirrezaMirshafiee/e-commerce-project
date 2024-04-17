@@ -49,61 +49,69 @@ export default function Register({ handlePage }) {
     address: "",
     phone: "",
   });
-  // const handleCheck=(async(e)=>{
-  //   try{
-  //     e.preventDefault();
-  //     const res=await fetch("http://localhost:7000/api/v1/auth/register", {
-  //       method: "POST",
-  //       headers: { "content-type": "application/json" },
-  //       body: JSON.stringify({ phone, email, username, password, address }),
-  //     })
-  //     console.log(res)
-  //     return res.json()
+  const handleCheck=(async(e)=>{
+    try{
+      e.preventDefault();
+      const res=await fetch("http://localhost:7000/api/v1/auth/register", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ phone, email, username, password, address }),
+      })
+      const data=await res.json()
+      if(data.status==='error'){
+        alert(data.message)
+      }
+    }catch(error){
+      console.log(error,'err')
+      setErr(error)
+    }
+  })
+  // const validate = (e) => {
+  //   e.preventDefault();
+  //   let inputError = {
+  //     username: "",
+  //     password: "",
+  //     email: "",
+  //     phone: "",
+  //     address: "",
+  //   };
+  //   let regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+  //   let regexPhone =
+  //     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/gm;
+  //   let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm;
 
-  //   }catch(error){
-  //     console.log(error.message)
+  //   if (!regexPassword.test(password)) {
+  //     inputError={
+  //       ...inputError,
+  //       password: "password must be 8 characters or more",
+  //     };
   //   }
-  // })
-  const validate = (e) => {
-    e.preventDefault();
-    let inputError = {
-      username: "",
-      password: "",
-      email: "",
-      phone: "",
-      address: "",
-    };
-    let regexPassword=/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
-    let regexPhone=/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/gm
-    let regexEmail=/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm
-    if (!username && !password && !address && !phone && !email) {
-       setErr({
-        ...inputError,
-        username: "Username is required",
-        password: "Password is required",
-        email: "Email is required",
-        phone: "Phone is required",
-        address: "Address is required",
-       })
-    }else if(!regexPassword.test(password)){
-       setErr({
-        ...inputError,
-        password: "password must be 8 characters or more",
-      });
-    }
-    else if(!regexPhone.test(phone)){
-       setErr({
-        ...inputError,
-        phone: "phone number invalid",
-      });
-    }
-    else if(!regexEmail.test(email)){
-       setErr({
-        ...inputError,
-        email: "email invalid",
-      });
-    }
-  };
+  //   if (!regexPhone.test(phone)) {
+  //     inputError={
+  //       ...inputError,
+  //       phone: "phone number invalid",
+  //     };
+  //   }
+  //   if (!regexEmail.test(email)) {
+  //     inputError={
+  //       ...inputError,
+  //       email: "email invalid",
+  //     };
+  //   }
+  //   if(!username){
+  //     inputError={
+  //       ...inputError,
+  //       username: "username is required",
+  //     };
+  //   }
+  //   if(!address){
+  //     inputError={
+  //       ...inputError,
+  //       username: "adders is required",
+  //     };
+  //   }
+  //   setErr(inputError)
+  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -123,7 +131,7 @@ export default function Register({ handlePage }) {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <Box component="form" noValidate onSubmit={validate} sx={{ mt: 3 }}>
+          <Box component="form" noValidate onSubmit={handleCheck} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -167,8 +175,9 @@ export default function Register({ handlePage }) {
                   value={phone}
                   onChange={(i) => setPhone(i.target.value)}
                 />
-                                <Typography variant="body2" sx={{color:'red'}}>{err.phone}</Typography>
-
+                <Typography variant="body2" sx={{ color: "red" }}>
+                  {err.phone}
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -181,8 +190,9 @@ export default function Register({ handlePage }) {
                   value={address}
                   onChange={(i) => setAddress(i.target.value)}
                 />
-                                <Typography variant="body2" sx={{color:'red'}}>{err.address}</Typography>
-
+                <Typography variant="body2" sx={{ color: "red" }}>
+                  {err.address}
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -196,8 +206,9 @@ export default function Register({ handlePage }) {
                   autoComplete="new-password"
                   onChange={(i) => setPassword(i.target.value)}
                 />
-                                <Typography variant="body2" sx={{color:'red'}}>{err.password}</Typography>
-
+                <Typography variant="body2" sx={{ color: "red" }}>
+                  {err.password}
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel

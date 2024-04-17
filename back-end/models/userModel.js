@@ -26,7 +26,7 @@ const UserSchema=new mongoose.Schema({
     password:{
         type:String,
         required:[true,"Please provide your phone number"],
-        minlength:8,
+        minLength:8,
         match:[/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,'password must be 8 characters or more']
     },
     role:{
@@ -43,6 +43,14 @@ const UserSchema=new mongoose.Schema({
      
 
 },{timestamps: true});
-
+UserSchema.post('save', function(error, doc, next) {
+    const x=Object.keys(error.keyPattern)
+    console.log(error)
+    if (error.code === 11000) {
+      next(new Error(x[0]+' must be unique'));
+    } else {
+      next(error);
+    }
+  })
 const User= mongoose.model('User', UserSchema);
 export default User

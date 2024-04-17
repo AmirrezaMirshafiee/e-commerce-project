@@ -45,7 +45,7 @@ export const signIn = catchAsync(async (req, res, next) => {
 });
 
 export const signUp = catchAsync(async (req, res, next) => {
-  const { password, ...others } = req.body;
+  const { password='', ...others } = req.body;
   const newPassword = bcrypt.hashSync(password, 10);
   const newUser = await User.create({ ...others, password: newPassword });
   // const newCart = await Cart.create({ userId: newUser._id, products: [] });
