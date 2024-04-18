@@ -18,17 +18,19 @@ export const signIn = catchAsync(async (req, res, next) => {
     new HandleError("username or password incorrect", 401);
   }
   const { password: hashPass, ...userOthers } = user._doc;
+
   const sendMessage = await fetch("https://api.limosms.com/api/sendcode", {
     method: "POST",
     body: JSON.stringify({
       Mobile: userOthers.phone,
-      Footer: "informatics website",
+      Footer: `Welcome ${userOthers.username}`,
     }),
     headers: {
       "Content-Type": "application/json",
       ApiKey: process.env.SMS_KEY,
     },
   });
+
   const dataMessage = await sendMessage.json();
   console.log(dataMessage);
   if (dataMessage.success) {
@@ -45,14 +47,25 @@ export const signIn = catchAsync(async (req, res, next) => {
 });
 
 export const signUp = catchAsync(async (req, res, next) => {
+  
   const { password='', ...others } = req.body;
-  const newPassword = bcrypt.hashSync(password, 10);
-  const newUser = await User.create({ ...others, password: newPassword });
-  // const newCart = await Cart.create({ userId: newUser._id, products: [] });
-  return res.status(201).json({
-    status: "success",
-    message: "register successfully",
-  });
+  let regexPassword =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+  if(regexPassword.test(password)){
+    const newPassword = bcrypt.hashSync(password, 10);
+    const newUser = await User.create({ ...others, password: newPassword });
+    // const newCart = await Cart.create({ userId: newUser._id, products: [] });
+    return res.status(201).json({
+      status: "success",
+      message: "register successfully",
+    });
+  }else{
+    return res.status(401).json({
+      status: "failed",
+      message: "register failed",
+    });
+  }
+
+
 });
 
 export const otp = catchAsync(async (req, res, next) => {
