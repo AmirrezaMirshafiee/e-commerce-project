@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import LoginRegister from "..";
+import Otp from "../Otp";
 
 function Copyright(props) {
   return (
@@ -159,6 +160,7 @@ export default function Register({ handlePage }) {
       setErr(inputError);
 
       const data = await res.json();
+
       if (data.status === "success") {
         // toast.success("register successfully", {
         //   position: "bottom-left",
@@ -170,6 +172,8 @@ export default function Register({ handlePage }) {
         //   progress: undefined,
         //   theme: "dark",
         // });
+        <Otp phone={phone}/>
+        
         alert('hi')
         use('/')
       } 

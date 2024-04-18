@@ -2,29 +2,35 @@ import { Button, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import OtpInput from "react-otp-input";
 import CountDown from "./CountDown";
-export default function Otp() {
+export default function Otp({phone}) {
   const [otp, setOtp] = useState("");
+  const [num, setNum] = useState(phone);
+  
 
 const handleOtp = async (e) => {
     try {
       e.preventDefault();
-      const res = await fetch("https://api.limosms.com/api/checkcode", {
+      const res = await fetch("http://localhost:7000/api/v1/auth/otp", {
         method: "POST",
         headers: {
-          ApiKey: '99dab280-f034-41f9-9c86-31d977f840fe',
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          Mobile:num,
           code:otp
         }),
       });
       const data = await res.json();
+      if(data.status==='success'){
+        alert('yy')
+      }
       console.log(data)
     } catch (err) {
       console.log(err);
     }
   };
   console.log(otp)
+  console.log(num)
 
   return (
     <>
