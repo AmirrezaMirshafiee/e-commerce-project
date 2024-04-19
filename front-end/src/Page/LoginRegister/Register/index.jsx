@@ -17,7 +17,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import LoginRegister from "..";
-import Otp from "../Otp";
+import { useContext } from "react";
+import PhoneContext from "../../../utils/PhoneContext";
 
 function Copyright(props) {
   return (
@@ -40,13 +41,14 @@ function Copyright(props) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Register({ handlePage }) {
+export default function Register({ handlePage, getFromChild }) {
   const use = useNavigate();
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
   const [password, setPassword] = useState();
   const [address, setAddress] = useState();
+  const {handleRegisterPhone}=useContext(PhoneContext)
   const [err, setErr] = useState({
     username: "",
     password: "",
@@ -54,15 +56,14 @@ export default function Register({ handlePage }) {
     address: "",
     phone: "",
   });
-
   const handleCheck = async (e) => {
-   try {
+    try {
       e.preventDefault();
       const res = await fetch("http://localhost:7000/api/v1/auth/register", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ username, password, email, phone, address }),
-      }); 
+      });
 
       let inputError = {
         username: "",
@@ -72,25 +73,27 @@ export default function Register({ handlePage }) {
         address: "",
       };
       // let notify = () => toast.error(inputError, )
-      let regexPassword =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
-      let regexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/gm;
+      let regexPassword =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+      let regexPhone =
+        /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/gm;
       let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm;
 
       if (!username || !email || !phone || !address || !password) {
-          inputError = {
-            ...inputError,
-            inputError: toast.error("Fields is required", {
-              position: "bottom-left",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            }),
-          };
-        }
+        inputError = {
+          ...inputError,
+          inputError: toast.error("Fields is required", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }),
+        };
+      }
       if (email && !regexEmail.test(email)) {
         inputError = {
           ...inputError,
@@ -172,12 +175,10 @@ export default function Register({ handlePage }) {
         //   progress: undefined,
         //   theme: "dark",
         // });
-        <Otp phone={phone}/>
-        
-        alert('hi')
-        use('/')
-      } 
-      else {
+        // getFromChild(phone);
+        handleRegisterPhone(phone);
+        use("/");
+      } else {
         toast.error("register failed", {
           position: "bottom-left",
           autoClose: 5000,
@@ -203,7 +204,6 @@ export default function Register({ handlePage }) {
       setErr(error);
     }
   };
-  
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -242,7 +242,6 @@ export default function Register({ handlePage }) {
                   value={username}
                   onChange={(i) => setUserName(i.target.value)}
                 />
-          
               </Grid>
               <Grid item xs={12}>
                 <TextField

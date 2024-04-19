@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PhoneContext from "../../../utils/PhoneContext";
 
 function Copyright(props) {
   return (
@@ -40,11 +41,13 @@ const defaultTheme = createTheme();
 export default function Login({ handlePage }) {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState();
   const [err, setErr] = useState({
     username: "",
     password: ""
   });
   const use = useNavigate();
+  const {handleRegisterPhone}=useContext(PhoneContext)
 
   const handleSubmit = async (i) => {
     try {
@@ -92,6 +95,7 @@ export default function Login({ handlePage }) {
           progress: undefined,
           theme: "dark",
         });
+        handleRegisterPhone(data.Mobile)
         use('/otp')
       } 
       else {

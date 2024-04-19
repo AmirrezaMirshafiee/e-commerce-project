@@ -37,6 +37,7 @@ export const signIn = catchAsync(async (req, res, next) => {
     return res.status(200).json({
       status: "success",
       message: "sms successfully sent",
+      Mobile: userOthers.phone,
     });
   } else {
     return res.status(400).json({

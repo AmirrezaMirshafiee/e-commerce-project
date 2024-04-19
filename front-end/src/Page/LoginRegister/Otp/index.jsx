@@ -1,10 +1,14 @@
 import { Button, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import OtpInput from "react-otp-input";
 import CountDown from "./CountDown";
-export default function Otp({phone}) {
+import PhoneContext from "../../../utils/PhoneContext";
+export default function Otp({number}) {
   const [otp, setOtp] = useState("");
-  const [num, setNum] = useState(phone);
+  const [num, setNum] = useState(number);
+  const {registerPhone}=useContext(PhoneContext);
+  console.log(registerPhone)
+  console.log(otp)
   
 
 const handleOtp = async (e) => {
@@ -16,21 +20,21 @@ const handleOtp = async (e) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Mobile:num,
+          Mobile:registerPhone,
           code:otp
         }),
       });
       const data = await res.json();
       if(data.status==='success'){
-        alert('yy')
+        alert('You have done it !!!!!')
       }
       console.log(data)
     } catch (err) {
       console.log(err);
     }
   };
-  console.log(otp)
-  console.log(num)
+  // console.log(number)
+  // console.log(num)
 
   return (
     <>
