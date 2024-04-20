@@ -16,24 +16,13 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneContext from "../../../utils/PhoneContext";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -44,27 +33,31 @@ export default function Login({ handlePage }) {
   const [phone, setPhone] = useState();
   const [err, setErr] = useState({
     username: "",
-    password: ""
+    password: "",
   });
   const use = useNavigate();
-  const {handleRegisterPhone}=useContext(PhoneContext)
+  const { handleRegisterPhone } = useContext(PhoneContext);
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleSubmit = async (i) => {
     try {
       i.preventDefault();
       const res = await fetch("http://localhost:7000/api/v1/auth", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ username, password }),
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    });
-
-    let inputError = {
-      username: "",
-      password: "",
-    };
-
-
+      let inputError = {
+        username: "",
+        password: "",
+      };
 
       if (!username || !password) {
         inputError = {
@@ -80,14 +73,13 @@ export default function Login({ handlePage }) {
             theme: "light",
           }),
         };
-        
       }
       setErr(inputError);
       const data = await res.json();
       if (data.status === "success") {
         toast.success("login successfully", {
           position: "bottom-left",
-          autoClose: 5000,
+          autoClose: 2500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -95,10 +87,12 @@ export default function Login({ handlePage }) {
           progress: undefined,
           theme: "dark",
         });
-        handleRegisterPhone(data.Mobile)
-        use('/otp')
-      } 
-      else {
+        handleRegisterPhone(data.Mobile);
+        localStorage.setItem("phone", data.Mobile);
+        setTimeout(() => {
+          use("/otp");
+        }, 2500);
+      } else {
         toast.error("UserName or Password is wrong", {
           position: "bottom-left",
           autoClose: 5000,
@@ -110,9 +104,10 @@ export default function Login({ handlePage }) {
           theme: "light",
         });
       }
-  }catch(err){
-    console.log(err)
-  }};
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -130,7 +125,7 @@ export default function Login({ handlePage }) {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Log in
           </Typography>
           <Box
             component="form"
@@ -142,15 +137,16 @@ export default function Login({ handlePage }) {
               margin="normal"
               required
               fullWidth
-              id="usename"
-              label="Usename"
-              name="usename"
-              autoComplete="usename"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
               value={username}
               onChange={(i) => setUserName(i.target.value)}
             />
-            <TextField
+            <FormControl
+              variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -161,18 +157,35 @@ export default function Login({ handlePage }) {
               autoComplete="current-password"
               value={password}
               onChange={(i) => setPassword(i.target.value)}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            >
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={showPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Login
             </Button>
             <ToastContainer
               position="top-center"
@@ -187,11 +200,6 @@ export default function Login({ handlePage }) {
               theme="light"
             />
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link onClick={handlePage} variant="body2">
                   {"Don't have an account? Sign Up"}
@@ -200,7 +208,6 @@ export default function Login({ handlePage }) {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

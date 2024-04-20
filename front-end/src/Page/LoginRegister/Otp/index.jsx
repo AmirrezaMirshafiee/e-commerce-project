@@ -3,35 +3,58 @@ import React, { useContext, useState } from "react";
 import OtpInput from "react-otp-input";
 import CountDown from "./CountDown";
 import PhoneContext from "../../../utils/PhoneContext";
-export default function Otp({number}) {
-  const [otp, setOtp] = useState("");
-  const {registerPhone}=useContext(PhoneContext);
-  console.log(registerPhone)
-  console.log(otp)
-  
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const handleOtp = async (e) => {
+export default function Otp() {
+  const [code, setCode] = useState("");
+  const { registerPhone } = useContext(PhoneContext);
+  const use = useNavigate();
+  const phone = localStorage.getItem("phone");
+
+  const handleOtp = async (e) => {
     try {
       e.preventDefault();
       const res = await fetch("http://localhost:7000/api/v1/auth/otp", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          Mobile:registerPhone,
-          code:otp
+          phone,
+          code,
         }),
       });
       const data = await res.json();
-      if(data.status==='success'){
-        alert('You have done it !!!!!')
+      if (data.status === "success") {
+        toast.success("login successful", {
+          position: "bottom-left",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setTimeout(() => {
+          use("/");
+        }, 2500);
+      } else {
+        toast.error("Please enter correct code", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-      console.log(data)
     } catch (err) {
       console.log(err);
     }
   };
-  // console.log(number)
-  // console.log(num)
 
   return (
     <>
@@ -50,8 +73,8 @@ const handleOtp = async (e) => {
           Please Enter SMS Code
         </Typography>
         <OtpInput
-          value={otp}
-          onChange={setOtp}
+          value={code}
+          onChange={setCode}
           numInputs={6}
           renderSeparator={
             <span style={{ color: "white", fontSize: "40px" }}>-</span>
@@ -68,6 +91,18 @@ const handleOtp = async (e) => {
         >
           Check Code
         </Button>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <Typography variant="h4" sx={{ marginBottom: "10px", color: "white" }}>
           HI {<CountDown seconds={120} />}
         </Typography>

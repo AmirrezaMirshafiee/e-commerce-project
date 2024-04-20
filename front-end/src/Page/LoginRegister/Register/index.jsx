@@ -15,40 +15,26 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Navigate, useNavigate } from "react-router-dom";
-import LoginRegister from "..";
-import { useContext } from "react";
-import PhoneContext from "../../../utils/PhoneContext";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Register({ handlePage, getFromChild }) {
+export default function Register({ handlePage }) {
   const use = useNavigate();
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
   const [password, setPassword] = useState();
   const [address, setAddress] = useState();
-  // const {handleRegisterPhone}=useContext(PhoneContext)
+  const [isRegister, setIsRegister] = useState();
   const [err, setErr] = useState({
     username: "",
     password: "",
@@ -56,6 +42,14 @@ export default function Register({ handlePage, getFromChild }) {
     address: "",
     phone: "",
   });
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const handleCheck = async (e) => {
     try {
       e.preventDefault();
@@ -72,7 +66,6 @@ export default function Register({ handlePage, getFromChild }) {
         phone: "",
         address: "",
       };
-      // let notify = () => toast.error(inputError, )
       let regexPassword =
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
       let regexPhone =
@@ -165,19 +158,19 @@ export default function Register({ handlePage, getFromChild }) {
       const data = await res.json();
 
       if (data.status === "success") {
-        // toast.success("register successfully", {
-        //   position: "bottom-left",
-        //   autoClose: 5000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   progress: undefined,
-        //   theme: "dark",
-        // });
-        // getFromChild(phone);
-        
-        use("/");
+        toast.success("register successful", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setTimeout(() => {
+          use("/");
+        }, 2500);
       } else {
         toast.error("register failed", {
           position: "bottom-left",
@@ -280,26 +273,40 @@ export default function Register({ handlePage, getFromChild }) {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <FormControl
+                  variant="outlined"
+                  margin="normal"
                   required
                   fullWidth
                   name="password"
                   label="Password"
                   type="password"
                   id="password"
-                  value={password}
                   autoComplete="new-password"
+                  value={password}
                   onChange={(i) => setPassword(i.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  required
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                >
+                  <InputLabel htmlFor="outlined-adornment-password">
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </FormControl>
               </Grid>
             </Grid>
             <Button
@@ -307,6 +314,7 @@ export default function Register({ handlePage, getFromChild }) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              // onClick={()=>isRegister.status === "success"&& handlePage}
             >
               Register
             </Button>
@@ -322,7 +330,7 @@ export default function Register({ handlePage, getFromChild }) {
               pauseOnHover
               theme="light"
             />
-            <Grid container justifyContent="flex-end">
+            <Grid container>
               <Grid item>
                 <Link onClick={handlePage} variant="body2">
                   Already have an account? Sign in
@@ -331,7 +339,6 @@ export default function Register({ handlePage, getFromChild }) {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
