@@ -48,7 +48,7 @@ export default function Register({ handlePage, getFromChild }) {
   const [phone, setPhone] = useState();
   const [password, setPassword] = useState();
   const [address, setAddress] = useState();
-  const {handleRegisterPhone}=useContext(PhoneContext)
+  // const {handleRegisterPhone}=useContext(PhoneContext)
   const [err, setErr] = useState({
     username: "",
     password: "",
@@ -176,7 +176,7 @@ export default function Register({ handlePage, getFromChild }) {
         //   theme: "dark",
         // });
         // getFromChild(phone);
-        handleRegisterPhone(phone);
+        // handleRegisterPhone(phone);
         use("/");
       } else {
         toast.error("register failed", {

@@ -5,7 +5,6 @@ import CountDown from "./CountDown";
 import PhoneContext from "../../../utils/PhoneContext";
 export default function Otp({number}) {
   const [otp, setOtp] = useState("");
-  const [num, setNum] = useState(number);
   const {registerPhone}=useContext(PhoneContext);
   console.log(registerPhone)
   console.log(otp)
@@ -16,9 +15,7 @@ const handleOtp = async (e) => {
       e.preventDefault();
       const res = await fetch("http://localhost:7000/api/v1/auth/otp", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           Mobile:registerPhone,
           code:otp

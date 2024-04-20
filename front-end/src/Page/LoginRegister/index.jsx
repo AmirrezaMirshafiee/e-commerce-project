@@ -13,7 +13,7 @@ export default function LoginRegister() {
 
   const getFromChild = (phone) => {
     setNumber(phone);
-    console.log(phone);
+    // console.log(phone);
   };
   
   return (
