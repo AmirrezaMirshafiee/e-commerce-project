@@ -176,7 +176,9 @@ export default function Register({ handlePage, getFromChild }) {
         //   theme: "dark",
         // });
         // getFromChild(phone);
+        alert('register successfully')
         handleRegisterPhone(phone);
+        console.log(phone)
         use("/");
       } else {
         toast.error("register failed", {
