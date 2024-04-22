@@ -1,18 +1,29 @@
 import { Button, Stack, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import OtpInput from "react-otp-input";
-import CountDown from "./CountDown";
 import PhoneContext from "../../../utils/PhoneContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Countdown, { zeroPad } from "react-countdown";
 
 export default function Otp() {
   const [code, setCode] = useState("");
   const { registerPhone } = useContext(PhoneContext);
   const use = useNavigate();
   const phone = localStorage.getItem("phone");
-
+  const Completionist = () => <Button onClick={resendCode}>Resend Code</Button>;
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      return <Completionist />;
+    } else {
+      return (
+        <Typography>
+          {zeroPad(minutes)}:{zeroPad(seconds)}
+        </Typography>
+      );
+    }
+  };
   const handleOtp = async (e) => {
     try {
       e.preventDefault();
@@ -25,37 +36,31 @@ export default function Otp() {
         }),
       });
       const data = await res.json();
-      if (data.status === "success") {
-        toast.success("login successful", {
-          position: "bottom-left",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-        setTimeout(() => {
-          use("/");
-        }, 2500);
-      } else {
-        toast.error("Please enter correct code", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
     } catch (err) {
       console.log(err);
     }
   };
+  const resendCode = async (i) => {
+    try {
+      i.preventDefault();
+      const sendMessage = await fetch("https://api.limosms.com/api/sendcode", {
+        method: "POST",
+        body: JSON.stringify({
+          Mobile: phone,
+          Footer: `Resend code`,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          ApiKey:'99dab280-f034-41f9-9c86-31d977f840fe',
+        },
+      })
+      const dataMessage = await sendMessage.json();
 
+      
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <Stack
@@ -70,7 +75,7 @@ export default function Otp() {
         }}
       >
         <Typography variant="h4" sx={{ marginBottom: "10px", color: "white" }}>
-          Please Enter SMS Code
+          Please Enter SMS Code Sent to {phone}
         </Typography>
         <OtpInput
           value={code}
@@ -82,15 +87,32 @@ export default function Otp() {
           renderInput={(props) => <input {...props} />}
           inputStyle={{ padding: "10px", color: "black", fontSize: "20px" }}
         />
-        <Button
-          variant="contained"
-          size="large"
-          type="submit"
-          sx={{ width: "10%", marginTop: "10px" }}
-          onClick={handleOtp}
-        >
-          Check Code
-        </Button>
+        <Stack flexDirection="row">
+          <Button
+            variant="contained"
+            size="large"
+            type="submit"
+            onClick={handleOtp}
+          >
+            Check Code
+          </Button>
+          <Button
+            disableRipple="false"
+            sx={{
+              backgroundColor: "#000416",
+              "&:hover": {
+                backgroundColor: "#000416",
+                cursor: "default",
+              },
+            }}
+          >
+            {" "}
+            <Countdown date={Date.now() + 10000} renderer={renderer} />
+          </Button>
+        </Stack>
+        <Link to="/login-register">
+          <Button sx={{ marginTop: "20px" }}>Back to Login</Button>
+        </Link>
         <ToastContainer
           position="top-center"
           autoClose={5000}
@@ -103,9 +125,6 @@ export default function Otp() {
           pauseOnHover
           theme="light"
         />
-        <Typography variant="h4" sx={{ marginBottom: "10px", color: "white" }}>
-          HI {<CountDown seconds={120} />}
-        </Typography>
       </Stack>
     </>
   );
