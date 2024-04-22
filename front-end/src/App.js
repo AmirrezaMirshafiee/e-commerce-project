@@ -2,24 +2,42 @@ import React, { useState } from "react";
 import LoginRegister from "./Page/LoginRegister";
 import { Route, Routes } from "react-router-dom";
 import Otp from "./Page/LoginRegister/Otp";
-import PhoneContext from "./utils/PhoneContext";
 import Home from "./Page/Home";
+import PhoneContext from "./utils/loginContext";
+import UsernameContext from "./utils/usernameContext";
+import PasswordContext from "./utils/passwordContext";
+import Login from "./Page/LoginRegister/Login";
+import Register from "./Page/LoginRegister/Register";
 
 export default function App() {
-  const [registerPhone, setRegisterPhone] = useState();
+  const [phone, setPhone] = useState();
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
 
-  const handleRegisterPhone = (e) => {
-    setRegisterPhone(e);
+  const handlePhone = (e) => {
+    setPhone(e);
+  };
+  const handleUsername = (e) => {
+    setUsername(e);
+  };
+  const handlePassword = (e) => {
+    setPassword(e);
   };
 
   return (
     <>
-      <PhoneContext.Provider value={{ registerPhone, handleRegisterPhone }}>
-        <Routes>
-        <Route exact path="" element={<Home/>}></Route>
-          <Route path="/login-register" element={<LoginRegister />} />
-          <Route path="/otp" element={<Otp />}></Route>
-        </Routes>
+      <PhoneContext.Provider value={{ phone, handlePhone }}>
+        <UsernameContext.Provider value={{ username, handleUsername }}>
+          <PasswordContext.Provider value={{ password, handlePassword }}>
+            <Routes>
+              <Route exact path="" element={<Home />}></Route>
+              <Route path="/login-register" element={<LoginRegister />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/otp" element={<Otp />}></Route>
+            </Routes>
+          </PasswordContext.Provider>
+        </UsernameContext.Provider>
       </PhoneContext.Provider>
     </>
   );

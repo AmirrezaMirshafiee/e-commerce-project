@@ -1,17 +1,21 @@
 import { Button, Stack, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import OtpInput from "react-otp-input";
-import PhoneContext from "../../../utils/PhoneContext";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Countdown, { zeroPad } from "react-countdown";
+import PhoneContext from "../../../utils/loginContext";
+import UsernameContext from "../../../utils/usernameContext";
+import PasswordContext from "../../../utils/passwordContext";
 
 export default function Otp() {
   const [code, setCode] = useState("");
-  const { registerPhone } = useContext(PhoneContext);
+  const { phone } = useContext(PhoneContext);
+  const { username } = useContext(UsernameContext);
+  const { password } = useContext(PasswordContext);
   const use = useNavigate();
-  const phone = localStorage.getItem("phone");
+  // const phone = localStorage.getItem("phone");
   const Completionist = () => <Button onClick={resendCode}>Resend Code</Button>;
   const renderer = ({ minutes, seconds, completed }) => {
     if (completed) {
@@ -36,27 +40,59 @@ export default function Otp() {
         }),
       });
       const data = await res.json();
+      if (data.status === "success") {
+        toast.success("login successful", {
+          position: "bottom-left",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setTimeout(() => {
+          use("/");
+        }, 2500);
+      } else {
+        toast.error("Wrong code", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (err) {
       console.log(err);
     }
   };
+
   const resendCode = async (i) => {
     try {
       i.preventDefault();
-      const sendMessage = await fetch("https://api.limosms.com/api/sendcode", {
+      const res = await fetch("http://localhost:7000/api/v1/auth", {
         method: "POST",
-        body: JSON.stringify({
-          Mobile: phone,
-          Footer: `Resend code`,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          ApiKey:'99dab280-f034-41f9-9c86-31d977f840fe',
-        },
-      })
-      const dataMessage = await sendMessage.json();
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-      
+      const data = await res.json();
+      if (data.status === "success") {
+        toast.success("Code was sent", {
+          position: "bottom-left",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
     } catch (err) {
       console.log(err);
     }

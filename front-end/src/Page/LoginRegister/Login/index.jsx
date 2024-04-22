@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -15,7 +13,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PhoneContext from "../../../utils/PhoneContext";
 import IconButton from "@mui/material/IconButton";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -23,6 +20,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import PhoneContext from "../../../utils/loginContext";
+import UsernameContext from "../../../utils/usernameContext";
+import PasswordContext from "../../../utils/passwordContext";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -36,7 +36,9 @@ export default function Login({ handlePage }) {
     password: "",
   });
   const use = useNavigate();
-  const { handleRegisterPhone } = useContext(PhoneContext);
+  const { handlePhone } = useContext(PhoneContext);           
+  const { handleUsername } = useContext(UsernameContext);           
+  const { handlePassword } = useContext(PasswordContext);           
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -76,6 +78,7 @@ export default function Login({ handlePage }) {
       }
       setErr(inputError);
       const data = await res.json();
+      console.log(data)
       if (data.status === "success") {
         toast.success("login successfully", {
           position: "bottom-left",
@@ -87,7 +90,9 @@ export default function Login({ handlePage }) {
           progress: undefined,
           theme: "dark",
         });
-        handleRegisterPhone(data.Mobile);
+        handlePhone(data.Mobile);
+        handleUsername(data.username);
+        handlePassword(data.password);
         localStorage.setItem("phone", data.Mobile);
         setTimeout(() => {
           use("/otp");

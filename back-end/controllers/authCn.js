@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import HandleError from "../Utils/handleError.js";
 import jwt from "jsonwebtoken";
 import Cart from "../models/cartModel.js";
+
 export const signIn = catchAsync(async (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -38,6 +39,8 @@ export const signIn = catchAsync(async (req, res, next) => {
       status: "success",
       message: "sms successfully sent",
       Mobile: userOthers.phone,
+      username: userOthers.username,
+      password: password
     });
   } else {
     return res.status(400).json({
