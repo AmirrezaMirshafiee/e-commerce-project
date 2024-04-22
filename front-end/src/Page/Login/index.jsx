@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -20,9 +19,10 @@ import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import PhoneContext from "../../../utils/loginContext";
-import UsernameContext from "../../../utils/usernameContext";
-import PasswordContext from "../../../utils/passwordContext";
+import PhoneContext from "../../utils/loginContext";
+import UsernameContext from "../../utils/usernameContext";
+import PasswordContext from "../../utils/passwordContext";
+import { Link } from "react-router-dom";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -30,7 +30,6 @@ const defaultTheme = createTheme();
 export default function Login({ handlePage }) {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState();
   const [err, setErr] = useState({
     username: "",
     password: "",
@@ -78,7 +77,7 @@ export default function Login({ handlePage }) {
       }
       setErr(inputError);
       const data = await res.json();
-      console.log(data)
+
       if (data.status === "success") {
         toast.success("login successfully", {
           position: "bottom-left",
@@ -93,7 +92,7 @@ export default function Login({ handlePage }) {
         handlePhone(data.Mobile);
         handleUsername(data.username);
         handlePassword(data.password);
-        localStorage.setItem("phone", data.Mobile);
+        // localStorage.setItem("phone", data.Mobile);
         setTimeout(() => {
           use("/otp");
         }, 2500);
@@ -206,8 +205,8 @@ export default function Login({ handlePage }) {
             />
             <Grid container>
               <Grid item>
-                <Link onClick={handlePage} variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link to={"/register"} variant="body2">
+                  Don't have an account? Register
                 </Link>
               </Grid>
             </Grid>

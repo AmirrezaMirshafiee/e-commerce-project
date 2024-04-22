@@ -5,9 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Countdown, { zeroPad } from "react-countdown";
-import PhoneContext from "../../../utils/loginContext";
-import UsernameContext from "../../../utils/usernameContext";
-import PasswordContext from "../../../utils/passwordContext";
+import PhoneContext from "../../utils/loginContext";
+import UsernameContext from "../../utils/usernameContext";
+import PasswordContext from "../../utils/passwordContext";
 
 export default function Otp() {
   const [code, setCode] = useState("");
@@ -16,7 +16,7 @@ export default function Otp() {
   const { password } = useContext(PasswordContext);
   const use = useNavigate();
   // const phone = localStorage.getItem("phone");
-  const Completionist = () => <Button onClick={resendCode}>Resend Code</Button>;
+  const Completionist = () => <Button variant="contained" onClick={resendCode}>Resend Code</Button>;
   const renderer = ({ minutes, seconds, completed }) => {
     if (completed) {
       return <Completionist />;
@@ -146,7 +146,7 @@ export default function Otp() {
             <Countdown date={Date.now() + 10000} renderer={renderer} />
           </Button>
         </Stack>
-        <Link to="/login-register">
+        <Link to="/login">
           <Button sx={{ marginTop: "20px" }}>Back to Login</Button>
         </Link>
         <ToastContainer

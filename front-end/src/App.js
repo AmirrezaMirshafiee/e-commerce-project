@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import LoginRegister from "./Page/LoginRegister";
 import { Route, Routes } from "react-router-dom";
-import Otp from "./Page/LoginRegister/Otp";
+import Otp from "./Page/Otp";
 import Home from "./Page/Home";
 import PhoneContext from "./utils/loginContext";
 import UsernameContext from "./utils/usernameContext";
 import PasswordContext from "./utils/passwordContext";
-import Login from "./Page/LoginRegister/Login";
-import Register from "./Page/LoginRegister/Register";
+import Login from "./Page/Login";
+import Register from "./Page/Register";
 
 export default function App() {
   const [phone, setPhone] = useState();
@@ -31,7 +31,8 @@ export default function App() {
           <PasswordContext.Provider value={{ password, handlePassword }}>
             <Routes>
               <Route exact path="" element={<Home />}></Route>
-              <Route path="/login-register" element={<LoginRegister />} />
+              {/* <Route path="/login-register" element={<LoginRegister />} />
+               */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/otp" element={<Otp />}></Route>

@@ -3,9 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -23,6 +20,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Link } from "react-router-dom";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -34,7 +32,6 @@ export default function Register({ handlePage }) {
   const [phone, setPhone] = useState();
   const [password, setPassword] = useState();
   const [address, setAddress] = useState();
-  const [isRegister, setIsRegister] = useState();
   const [err, setErr] = useState({
     username: "",
     password: "",
@@ -169,7 +166,7 @@ export default function Register({ handlePage }) {
           theme: "dark",
         });
         setTimeout(() => {
-          use("/");
+          use("/login");
         }, 2500);
       } else {
         toast.error("register failed", {
@@ -314,7 +311,6 @@ export default function Register({ handlePage }) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              // onClick={()=>isRegister.status === "success"&& handlePage}
             >
               Register
             </Button>
@@ -332,8 +328,8 @@ export default function Register({ handlePage }) {
             />
             <Grid container>
               <Grid item>
-                <Link onClick={handlePage} variant="body2">
-                  Already have an account? Sign in
+                <Link to="/login" variant="body2">
+                  Already have an account? Log in
                 </Link>
               </Grid>
             </Grid>
