@@ -167,7 +167,7 @@ export default function Register({ handlePage }) {
         });
         setTimeout(() => {
           use("/login");
-        }, 2500);
+        }, 1500);
       } else {
         toast.error("register failed", {
           position: "bottom-left",
